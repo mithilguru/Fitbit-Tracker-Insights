@@ -93,18 +93,19 @@ daily_sleep <- read_csv('Fitbit-Data/sleepDay_merged.csv')
 ```
 ```{r}
 # separating date and time
-daily_sleep %>% separate(col = SleepDay,into = c("Date", "Time"), sep = " ", remove = TRUE)
-daily_sleep$Date <- as.Date(daily_sleep$Date)
-
+ds2 <- daily_sleep %>% 
+  separate(col = SleepDay,into = c("Date", "Time"), sep = " ", remove = TRUE)
+head(ds2)
 ```
 
 The data is now formatted for processing in BigQuery (SQL). Exporting file for use in Google Cloud (not establishing direct connection to R). 
 ```{r}
 # exporting new csv
-write_csv(daily_sleep, 'Fitbit-Data/daily_sleep.csv')
+write_csv(ds2, 'Fitbit-Data/daily_sleep.csv')
 ```
 
 Importing the data back to RStudio for analysis following SQL processing.
+
 
 
 ## ANALYSIS
