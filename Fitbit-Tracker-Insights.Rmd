@@ -1,0 +1,124 @@
+---
+title: "Fitbit-Tracker-Insights"
+author: "Mithil Guru"
+date: '2022-06-26'
+output: html_document
+---
+
+# FITBIT TRACKER INSIGHTS
+
+## INTRO
+
+Fitbit is a fitness technology company that produces wearables to monitor various aspects of health and activity, such as heart rate, daily steps, sleep-quality, etc. There is a tremendous amount of data collected by these wearable devices daily that can be harnessed to benefit the consumer and the company. I will explore the Fitbit fitness tracker data Kaggle dataset (https://www.kaggle.com/arashnic/fitbit) for business insight as an extension of the Google Data Analytics Certificate Capstone Project. 
+
+**OBJECTIVES**
+
+1. Discover trends in usage
+
+2. Generate recommendations for product strategy
+
+
+
+## METHODS
+
+Checking the data first for validity and integrity. 
+The data description indicates it is generated from respondents to a survey in 2016. It includes consented data from the personal trackers thirty users.
+
+**DATA - Assessment**
+
+Assessing the source of the data, it is likely not reliable as the sample size is only 30, the survey was conducted and compiled by a third-party organization, and the data may be slighlty inconsistent (due to the source including data from different types of trackers) and outdated as current trackers have improved capabilities. Additionally, there is a possibility of voluntary response bias due to the participants consenting to take place in the study, which may have influenced their habits during the course of the study. There is also no extra information provided about the participants, so the sample may not be truly representative of the general population.
+
+Despite the limitations, the dataset will be used as it is one of the few publicly available sources with Fitbit tracker data - most tracker data is locked for user privacy. The only alternative for reliable data would be to self-analyze Fitbit data with the use of the Fitbit API, but this limits study to 1 subject. 
+
+**DATA - Summary**
+
+The data includes 18 total datasets (CSV files) representing data collected by the trackers. A quick search through the files revealed that most of the data was collected and compiled in the dailyActivity.csv dataset, and the remaining files contain specific intervals or variations of the quantitative data. 
+
+The datasets can be categorized as such - 
+
+**Activity** - 
+
+- dailyActivity
+
+- dailySteps, hourlySteps, minuteSteps (Narrow & Wide)
+
+- dailyIntensities, hourlyIntensities, minuteIntensities (Narrow & Wide)
+
+**Sleep** - 
+
+- sleepDay, minuteSleep
+
+**Calories / Weight** - 
+
+- dailyCalories, hourlyCalories, minuteCalories (Narrow & Wide)
+
+- weightLogInfo
+
+**Other** - 
+
+- heartrate
+
+- minuteMETs (Energy Expenditure)
+
+
+Most of the data is explained in the dailyActivity file, and the sleepDay file provides additional information for analysis. The remaining datasets can be condensed. 
+
+The weightLog, heartrate, and minuteSleep files do not contain data for all the subjects, and will not be considered as they do not meet minimum sample size requirements. The minuteMETs file does not provide relevant data for the business objective.
+
+**DATA - Features** 
+All variables are quantitative.
+
+**Steps** - total steps
+
+**Intensity** - sorted by level (Sedentary, Lightly Active, Moderately Active, Very Active) for distance and time
+
+**Calories** - total calories
+
+**Sleep** - total sleeps per day, minutes asleep, time in bed
+
+Using SQL (BigQuery) to perform the initial data preparation and R (RStudio) for additional data transformation and visualizations.
+
+
+
+## FEATURE ENGINEERING
+
+Transforming sleep data (for parsing).
+```{r}
+# imports
+library(tidyverse)
+
+# data
+daily_sleep <- read_csv('Fitbit-Data/sleepDay_merged.csv')
+
+```
+```{r}
+# separating date and time
+daily_sleep %>% separate(col = SleepDay,into = c("Date", "Time"), sep = " ", remove = TRUE)
+daily_sleep$Date <- as.Date(daily_sleep$Date)
+
+```
+
+The data is now formatted for processing in BigQuery (SQL). Exporting file for use in Google Cloud (not establishing direct connection to R). 
+```{r}
+# exporting new csv
+write_csv(daily_sleep, 'Fitbit-Data/daily_sleep.csv')
+```
+
+Importing the data back to RStudio for analysis following SQL processing.
+
+
+## ANALYSIS
+
+
+
+
+## DISCUSSION
+
+
+
+**Next Steps**
+
+
+
+
+
