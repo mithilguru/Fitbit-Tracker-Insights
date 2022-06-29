@@ -76,6 +76,18 @@ All variables are quantitative.
 
 **Sleep** - total sleeps per day, minutes asleep, time in bed
 
+The initial chosen datasets.
+```{r}
+# imports
+library(tidyverse)
+
+# data
+df <- read_csv('Fitbit-Data/dailyActivity_merged.csv')
+dfs <- read_csv('Fitbit-Data/sleepDay_merged.csv')
+
+head(df)
+head(dfs)
+```
 Using SQL (BigQuery) to perform the initial data preparation and R (RStudio) for additional data transformation and visualizations.
 
 
@@ -84,27 +96,41 @@ Using SQL (BigQuery) to perform the initial data preparation and R (RStudio) for
 
 Transforming sleep data (for parsing).
 ```{r}
-# imports
-library(tidyverse)
-
-# data
-daily_sleep <- read_csv('Fitbit-Data/sleepDay_merged.csv')
-
-```
-```{r}
 # separating date and time
-ds2 <- daily_sleep %>% 
+ds2 <- dfs %>% 
   separate(col = SleepDay,into = c("Date", "Time"), sep = " ", remove = TRUE)
 head(ds2)
 ```
 
-The data is now formatted for processing in BigQuery (SQL). Exporting file for use in Google Cloud (not establishing direct connection to R). 
+The data is now formatted for processing in BigQuery (SQL). 
 ```{r}
 # exporting new csv
 write_csv(ds2, 'Fitbit-Data/daily_sleep.csv')
 ```
 
-Importing the data back to RStudio for analysis following SQL processing.
+Objectives of SQL Analysis: 
+1. Explore data - find total number of rows, distinct values
+2. Prep data - clean data, combine and condense datasets
+3. Note trends, calculate summary statistics, mins and maxes
+Final -  Export to R for modeling and visualizations
+
+Connecting to BigQuery database.
+```{r}
+library(bigrquery)
+library(DBI)
+con <- dbConnect(
+  bigrquery::bigquery(),
+  project = "fitbit-tracker-analysis",
+  dataset = "daily_activity",
+)
+```
+
+Testing connection.
+```{sql, connection = con, output.var = "dfn"}
+# test query
+SELECT "Id", "TotalSteps"
+FROM `daily_activity`
+```
 
 
 
