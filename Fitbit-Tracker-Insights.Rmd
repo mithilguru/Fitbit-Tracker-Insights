@@ -108,11 +108,20 @@ The data is now formatted for processing in BigQuery (SQL).
 write_csv(ds2, 'Fitbit-Data/daily_sleep.csv')
 ```
 
-Objectives of SQL Analysis: 
-1. Explore data - find total number of rows, distinct values
-2. Prep data - clean data, combine and condense datasets
-3. Note trends, calculate summary statistics, mins and maxes
-Final -  Export to R for modeling and visualizations
+**SQL**
+Processing - 
+Observe distinct values
+Merge tables
+Check for missing/null values
+Check for mistyped values, 
+Check for duplicate values
+Adjust data types
+
+Analysis - 
+Add new columns (time of day / day of week)
+Activity levels by user - steps, activity intensity (averages)
+Summary statistics - steps, distance, activity intensity, calories, sleep (averages, mins and maxes)(and by time/day)
+
 
 Connecting to BigQuery database.
 ```{r}
@@ -125,11 +134,25 @@ con <- dbConnect(
 )
 ```
 
-Testing connection.
-```{sql, connection = con, output.var = "dfn"}
-# test query
-SELECT "Id", "TotalSteps"
+Finding the number of users for each table.
+```{sql, connection = con, output.var = "id1"}
+# distinct ids for activity table
+SELECT COUNT(DISTINCT Id) AS Users 
 FROM `daily_activity`
+```
+```{sql, connection = con, output.var = "id2"}
+# distinct ids for sleep table
+SELECT COUNT(DISTINCT Id) AS Users 
+FROM `daily_sleep`
+```
+
+Activity data has 33 unique users, and sleep data has 24 unique users. Merging the tables next.
+```{sql, connection = con, output.var = "dfn"}
+# join activity and sleep data by id and date
+SELECT  A.*, S.TotalSleepRecords, S.TotalMinutesAsleep
+FROM `daily_activity` A
+LEFT JOIN `daily_sleep` S
+ON A.Id = S.Id AND A.ActivityDate = S.Date;
 ```
 
 
