@@ -74,7 +74,7 @@ All variables are quantitative.
 
 **Calories** - total calories
 
-**Sleep** - total sleeps per day, minutes asleep, time in bed
+**Sleep** - total sleep sessions per day, minutes asleep, time in bed
 
 The initial chosen datasets.
 ```{r}
@@ -108,19 +108,12 @@ The data is now formatted for processing in BigQuery (SQL).
 write_csv(ds2, 'Fitbit-Data/daily_sleep.csv')
 ```
 
-**SQL**
-Processing - 
-Observe distinct values
-Merge tables
-Check for missing/null values
-Check for mistyped values, 
-Check for duplicate values
-Adjust data types
 
-Analysis - 
-Add new columns (time of day / day of week)
-Activity levels by user - steps, activity intensity (averages)
-Summary statistics - steps, distance, activity intensity, calories, sleep (averages, mins and maxes)(and by time/day)
+**SQL Objectives:**
+
+- Prep dataset - check for distinct users, merge tables, remove missing values and duplicates, identify mistyped data, add day-of-week column
+
+- Perform exploratory data analysis - activity levels by user (steps, activity intensity), summary statistics (steps, distance, intensity, calories, sleep - by day)
 
 
 Connecting to BigQuery database.
@@ -137,22 +130,55 @@ con <- dbConnect(
 Finding the number of users for each table.
 ```{sql, connection = con, output.var = "id1"}
 # distinct ids for activity table
-SELECT COUNT(DISTINCT Id) AS Users 
+SELECT COUNT(DISTINCT id) AS users 
 FROM `daily_activity`
 ```
 ```{sql, connection = con, output.var = "id2"}
 # distinct ids for sleep table
-SELECT COUNT(DISTINCT Id) AS Users 
+SELECT COUNT(DISTINCT id) AS users 
 FROM `daily_sleep`
 ```
 
 Activity data has 33 unique users, and sleep data has 24 unique users. Merging the tables next.
 ```{sql, connection = con, output.var = "dfn"}
 # join activity and sleep data by id and date
-SELECT  A.*, S.TotalSleepRecords, S.TotalMinutesAsleep
-FROM `daily_activity` A
-LEFT JOIN `daily_sleep` S
-ON A.Id = S.Id AND A.ActivityDate = S.Date;
+CREATE TABLE daily_stats AS
+  (SELECT  a.*, s.totalsleeprecords, s.totalminutesasleep
+  FROM `daily_activity` a
+  LEFT JOIN `daily_sleep` s
+  ON a.id = s.id AND a.activitydate = s.date);
+```
+
+Now checking for missing/null values.
+```{sql, connection = con, output.var = "ntest"}
+# check for null values
+SELECT *
+FROM `daily_stats`
+WHERE calories IS NULL;
+```
+
+There are no missing/null values from the activity data. The BigQuery database indicates that the entered data and datatypes are all consistent. Now sorting through the data to check for outliers and mistyped data.
+
+```{sql, connection = con, output.var = "mtest"}
+# order columns to check for data errors
+SELECT *
+FROM `daily_stats`
+ORDER BY calories DESC
+```
+
+There are no apparent incorrect data points. Now identifying and removing any duplicates.
+```{sql, connection = con, output.var = "dtest"}
+# query from joined table
+SELECT id, activitydate, COUNT(*)
+FROM `daily_stats`
+GROUP BY id, activitydate
+HAVING COUNT(*) > 1
+```
+
+```{sql, connection = con, output.var = "dowtest"}
+# query from joined table
+SELECT *, EXTRACT(DAYOFWEEK FROM activitydate) AS day
+FROM `daily_stats`;
 ```
 
 
