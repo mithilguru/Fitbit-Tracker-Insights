@@ -108,13 +108,7 @@ The data is now formatted for processing in BigQuery (SQL).
 write_csv(ds2, 'Fitbit-Data/daily_sleep.csv')
 ```
 
-
-**SQL Objectives:**
-
-- Prep dataset - check for distinct users, merge tables, remove missing values and duplicates, identify mistyped data, add day-of-week column
-
-- Perform exploratory data analysis - activity levels by user (steps, activity intensity), summary statistics (steps, distance, intensity, calories, sleep - by day)
-
+SQL Data Prep Objectives - check for distinct users, merge tables, remove missing values and duplicates, identify mistyped data, add day-of-week column.
 
 Connecting to BigQuery database.
 ```{r}
@@ -152,7 +146,7 @@ CREATE TABLE daily_stats AS
 Now checking for missing/null values.
 ```{sql, connection = con, output.var = "ntest"}
 # check for null values
-SELECT *
+SELECT * as ntest
 FROM `daily_stats`
 WHERE calories IS NULL;
 ```
@@ -161,22 +155,22 @@ There are no missing/null values from the activity data. The BigQuery database i
 
 ```{sql, connection = con, output.var = "mtest"}
 # order columns to check for data errors
-SELECT *
+SELECT * as mtest
 FROM `daily_stats`
 ORDER BY calories DESC
 ```
 
 There are no apparent incorrect data points. Now identifying and removing any duplicates.
 ```{sql, connection = con, output.var = "dtest"}
-# query from joined table
-SELECT id, activitydate, COUNT(*)
+# check for duplicates in joined table
+SELECT id, activitydate, COUNT(*) AS dtest
 FROM `daily_stats`
 GROUP BY id, activitydate
 HAVING COUNT(*) > 1
 ```
 
-```{sql, connection = con, output.var = "dowtest"}
-# query from joined table
+```{sql, connection = con, output.var = "dfn"}
+# add day of week to final table
 SELECT *, EXTRACT(DAYOFWEEK FROM activitydate) AS day
 FROM `daily_stats`;
 ```
@@ -185,6 +179,7 @@ FROM `daily_stats`;
 
 ## ANALYSIS
 
+Initial exploratory analysis will involve understanding user-specific activity data, and general summary statistics of the variables in the dataset.
 
 
 
