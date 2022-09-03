@@ -102,13 +102,13 @@ ds2 <- dfs %>%
 head(ds2)
 ```
 
-The data is now formatted for processing in BigQuery (SQL). 
+The data is now formatted for processing by SQL. 
 ```{r}
 # exporting new csv
 write_csv(ds2, 'Fitbit-Data/daily_sleep.csv')
 ```
 
-SQL Data Prep Objectives - check for distinct users, merge tables, remove missing values and duplicates, identify mistyped data, add day-of-week column.
+SQL Data Prep Objectives - check for distinct users, merge tables, remove missing values and duplicates, identify mistyped data, adjust columns.
 
 Connecting to BigQuery database.
 ```{r}
@@ -169,18 +169,29 @@ GROUP BY id, activitydate
 HAVING COUNT(*) > 1
 ```
 
+Adding day of week column to the merged table. Dropping tracker distance, logged activities distance, and sedentary active distance columns (redundant information).
 ```{sql, connection = con, output.var = "dfn"}
 # add day of week to final table
 SELECT *, EXTRACT(DAYOFWEEK FROM activitydate) AS day
 FROM `daily_stats`;
 ```
-
+```{sql, connection = con, output.var = "dfn"}
+# removing columns
+ALTER TABLE `daily_stats`
+DROP trackerdistance,
+DROP loggedactivitiesdistance,
+DROP sedentaryactivedistance;
+```
 
 
 ## ANALYSIS
 
 Initial exploratory analysis will involve understanding user-specific activity data, and general summary statistics of the variables in the dataset.
-
+Importing updated dataset.
+```{r}
+dfn <- read_csv('Fitbit-Data/daily_stats.csv')
+dfn
+```
 
 
 ## DISCUSSION
