@@ -26,9 +26,9 @@ The data description indicates it is generated from respondents to a survey in 2
 
 **DATA - Assessment**
 
-Assessing the source of the data, it is likely not reliable as the sample size is only 30, the survey was conducted and compiled by a third-party organization, and the data may be slighlty inconsistent (due to the source including data from different types of trackers) and outdated as current trackers have improved capabilities. Additionally, there is a possibility of voluntary response bias due to the participants consenting to take place in the study, which may have influenced their habits during the course of the study. There is also no extra information provided about the participants, so the sample may not be truly representative of the general population.
+Assessing the source of the data, it is likely not reliable as the sample size is only 30, the survey was conducted and compiled by a third-party organization, and the data may be slighlty inconsistent, due to the source including data from different trackers, and outdated as current trackers have improved capabilities. Additionally, there is a possibility of voluntary response bias due to the participants consenting to take place in the study, which may have influenced their habits during the course of the study. There is also no extra information provided about the participants, so the sample may not be truly representative of the general population.
 
-Despite the limitations, the dataset will be used as it is one of the few publicly available sources with Fitbit tracker data - most tracker data is locked for user privacy. The only alternative for reliable data would be to self-analyze Fitbit data with the use of the Fitbit API, but this limits study to 1 subject. 
+Despite the limitations, the dataset is chosen for analysis since it is one of the few publicly available sources with Fitbit tracker data - most tracker data is locked for user privacy. The only alternative for reliable data would be to self-analyze Fitbit data with the use of the Fitbit API, but this limits study to one subject. 
 
 **DATA - Summary**
 
@@ -61,18 +61,18 @@ The datasets can be categorized as such -
 - minuteMETs (Energy Expenditure)
 
 
-Most of the data is explained in the dailyActivity file, and the sleepDay file provides additional information for analysis. The remaining datasets can be condensed. 
+Most of the data is explained in the dailyActivity file, and the sleepDay file provides additional information for analysis. The hourlySteps and hourlyIntensities datasets also supplement the daily activity data. The remaining datasets can be condensed. 
 
 The weightLog, heartrate, and minuteSleep files do not contain data for all the subjects, and will not be considered as they do not meet minimum sample size requirements. The minuteMETs file does not provide relevant data for the business objective.
 
 **DATA - Features** 
 All variables are quantitative.
 
-**Steps** - total steps
+**Steps** - total steps per day
 
 **Intensity** - sorted by level (Sedentary, Lightly Active, Moderately Active, Very Active) for distance and time
 
-**Calories** - total calories
+**Calories** - total calories burned per day
 
 **Sleep** - total sleep sessions per day, minutes asleep, time in bed
 
@@ -85,18 +85,51 @@ library(tidyverse)
 df <- read_csv('Fitbit-Data/dailyActivity_merged.csv')
 dfs <- read_csv('Fitbit-Data/sleepDay_merged.csv')
 
+dfhs <- read_csv('Fitbit-Data/hourlySteps_merged.csv')
+dfhi <- read_csv('Fitbit-Data/hourlyIntensities_merged.csv')
+
 head(df)
 head(dfs)
+head(dfhs)
+head(dfhi)
 ```
-Using SQL (BigQuery) to perform the initial data preparation and R (RStudio) for additional data transformation and visualizations.
+Using SQL (BigQuery database) to perform the initial data preparation and R (dplyr) for additional data transformation and visualizations.
 
 
 
 ## FEATURE ENGINEERING
 
+Transforming hourly activity data.
+```{r}
+# convert steps dataset to datetime format
+dfhs <- dfhs %>% 
+  rename(Datetime = ActivityHour) %>% 
+  mutate(Datetime = as.POSIXct(Datetime, format = "%m/%d/%Y %I:%M:%S %p", tz = Sys.timezone())) %>% 
+  # separate date and time
+  separate(Datetime, into = c("Date", "Time"), sep = " ") 
+
+# convert intensities dataset to datetime format
+dfhi <- dfhi %>% 
+  rename(Datetime = ActivityHour) %>% 
+  mutate(Datetime = as.POSIXct(Datetime, format = "%m/%d/%Y %I:%M:%S %p", tz = Sys.timezone())) %>% 
+  # separate date and time
+  separate(Datetime, into = c("Date", "Time"), sep = " ")
+
+head(dfhs)
+head(dfhi)
+```
+
+Combining the activity datasets.
+```{r}
+# merge hourly steps and intensities datasets
+dfh <- merge(dfhs, dfhi, by = c("Id", "Date", "Time"), all.x = TRUE) 
+
+head(dfh)
+```
+
 Transforming sleep data (for parsing).
 ```{r}
-# separating date and time
+# separate date and time
 ds2 <- dfs %>% 
   separate(col = SleepDay,into = c("Date", "Time"), sep = " ", remove = TRUE)
 head(ds2)
@@ -105,7 +138,7 @@ head(ds2)
 The data is now formatted for processing by SQL. 
 ```{r}
 # exporting new csv
-write_csv(ds2, 'Fitbit-Data/daily_sleep.csv')
+# write_csv(ds2, 'Fitbit-Data/daily_sleep.csv')
 ```
 
 SQL Data Prep Objectives - check for distinct users, merge tables, remove missing values and duplicates, identify mistyped data, adjust columns.
@@ -176,22 +209,56 @@ SELECT *, EXTRACT(DAYOFWEEK FROM activitydate) AS day
 FROM `daily_stats`;
 ```
 ```{sql, connection = con, output.var = "dfn"}
-# removing columns
+# remove columns
 ALTER TABLE `daily_stats`
 DROP trackerdistance,
 DROP loggedactivitiesdistance,
 DROP sedentaryactivedistance;
 ```
 
-
-## ANALYSIS
-
-Initial exploratory analysis will involve understanding user-specific activity data, and general summary statistics of the variables in the dataset.
 Importing updated dataset.
 ```{r}
 dfn <- read_csv('Fitbit-Data/daily_stats.csv')
-dfn
+head(dfn)
 ```
+
+Performing final date/time transformations (adding weekday column).
+```{r}
+# transform daily activity day values to weekdays
+dfn$Day[dfn$Day == 1] <- "Sunday"
+dfn$Day[dfn$Day == 2] <- "Monday"
+dfn$Day[dfn$Day == 3] <- "Tuesday"
+dfn$Day[dfn$Day == 4] <- "Wednesday"
+dfn$Day[dfn$Day == 5] <- "Thursday"
+dfn$Day[dfn$Day == 6] <- "Friday"
+dfn$Day[dfn$Day == 7] <- "Saturday"
+
+# add weekday column to hourly activity dataset
+dfh <- dfh %>%
+  mutate(Day = as.Date(Date)) %>%
+  mutate(Day = weekdays(Day))
+
+# clean output
+hcols <- c('Id', 'Day', 'Date', 'Time', 'StepTotal', 'TotalIntensity', 'AverageIntensity')
+dfh <- dfh[, hcols]
+
+head(dfn)
+head(dfh)
+```
+
+
+## ANALYSIS
+
+Initial exploratory analysis will involve understanding general summary statistics of the variables, and user-specific activity data.
+
+```{r}
+# summary of daily activity data
+summary(dfn)
+```
+
+The initial data summaries suggest most users are generally active (median 7439 steps a day). The vast majority of time is spent being sedentary (expected), and the median time spent in intense activity is only 11 minutes (4 very active mins + 7 fairly active minutes). The mean intense activity values are much higher for both (21 very active minutes, 13 fairly active minutes) hinting at a skewed distribution likely due to only a small portion of users having a regular workout routine. Users average around ~7 hours of sleep a night on average. Visualizing these distributions next for clarity.
+
+
 
 
 ## DISCUSSION
