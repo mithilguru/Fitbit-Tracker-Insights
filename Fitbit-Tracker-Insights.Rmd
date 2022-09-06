@@ -11,11 +11,11 @@ output: html_document
 
 Fitbit is a fitness technology company that produces wearables to monitor various aspects of health and activity, such as heart rate, daily steps, sleep-quality, etc. There is a tremendous amount of data collected by these wearable devices daily that can be harnessed to benefit the consumer and the company. I will explore the Fitbit fitness tracker data Kaggle dataset (https://www.kaggle.com/arashnic/fitbit) for business insight as an extension of the Google Data Analytics Certificate Capstone Project. 
 
-**OBJECTIVES**
+### OBJECTIVES
 
-1. Discover trends in usage
+**1. Discover trends in usage**
 
-2. Generate recommendations for product strategy
+**2. Generate recommendations for product strategy**
 
 
 
@@ -80,6 +80,7 @@ The initial chosen datasets.
 ```{r}
 # imports
 library(tidyverse)
+library(DataExplorer)
 
 # data
 df <- read_csv('Fitbit-Data/dailyActivity_merged.csv')
@@ -249,15 +250,74 @@ head(dfh)
 
 ## ANALYSIS
 
-Initial exploratory analysis will involve understanding general summary statistics of the variables, and user-specific activity data.
+Initial exploratory analysis involves understanding usage patterns. The study spanned exactly one month (31 days), and ideally the majority of users logged data every day. 
+
+```{r}
+# user logs data frame 
+i_usage <- dfn %>%
+  group_by(Id) %>%
+  summarize(Logs = sum(n())) %>%
+  mutate(UsageActivity = if_else(between(Logs, 1, 15), "Inactive", "Regular"))
+
+head(i_usage)
+
+```
+```{r}
+# summarizing individual user data
+usage <- i_usage %>%
+  group_by(UsageActivity) %>%
+  summarise(Users = n()) %>%
+  mutate(Percent = scales::percent(Users/sum(Users)))
+
+summary(i_usage$Logs)
+usage
+```
+The median user has 31 logs (logged data every day), and the average is ~28 logs. Only one user is categorized as 'Inactive' (not logging at least every other day). Thus the majority of users are at least using trackers to log activity daily. Now viewing usage specific to date / day of week.
+
+```{r}
+# usage by date data frame 
+d_usage <- dfn %>%
+  group_by(ActivityDate) %>%
+  summarize(UniqueLogs = sum(n())) %>%
+  arrange(UniqueLogs)
+
+# usage by day data frame
+dw_usage <- dfn %>%
+  group_by(Day) %>%
+  summarize(Logs = sum(n()))
+
+dw_usage$Day <- factor(dw_usage$Day, levels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))
+
+head(d_usage)
+summary(d_usage$UniqueLogs)
+dw_usage
+
+# usage by day plot 
+ggplot(dw_usage, aes(x = Day, y = Logs, fill = Day)) + 
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  theme(panel.background = element_blank()) + 
+  scale_fill_manual(values=c("gainsboro", "gainsboro", "steelblue", "steelblue", "steelblue", "gainsboro", "gainsboro")) + 
+  labs(title = "Total Logs by Day of Week")
+  
+
+```
+Checking the unique logs per date shows on an average day, almost all the users (median = 32, mean = ~30) logged activity on their tracker. Sorting by day-of-week shows that the total number of logs are generally higher during the mid-week (Tuesday, Wednesday, Thursday) by a slight margin.
+
+Now viewing the general summary statistics for each variable, and user-specific activity data.
 
 ```{r}
 # summary of daily activity data
 summary(dfn)
 ```
 
-The initial data summaries suggest most users are generally active (median 7439 steps a day). The vast majority of time is spent being sedentary (expected), and the median time spent in intense activity is only 11 minutes (4 very active mins + 7 fairly active minutes). The mean intense activity values are much higher for both (21 very active minutes, 13 fairly active minutes) hinting at a skewed distribution likely due to only a small portion of users having a regular workout routine. Users average around ~7 hours of sleep a night on average. Visualizing these distributions next for clarity.
+The initial data summaries suggest most users are generally active (median 7439 steps a day). The vast majority of time is spent being sedentary (expected), and the median time spent in intense activity is only 11 minutes (4 very active minutes + 7 fairly active minutes). The mean intense activity values are much higher for both (21 very active minutes, 13 fairly active minutes) hinting at a skewed distribution likely due to only a small portion of users having a regular workout routine. Users average around ~7 hours of sleep a night on average. Visualizing these distributions next for clarity.
 
+```{r}
+# distributions of daily activity data
+dfn %>% select(c('TotalSteps', 'TotalDistance', 'VeryActiveMinutes', 'FairlyActiveMinutes', 'LightlyActiveMinutes', 'SedentaryMinutes')) %>% plot_histogram(ncol = 3, ggtheme = theme_light(base_line_size = 0, base_rect_size = 0))
+options(repr.plot.width = 21, repr.plot.height = 9)
+```
+The distributions of the activity variables confirm the initial summaries: active entries are right-skewed (biased by a select few active users) as shown by the skewed distributions of total distance, total steps, very active minutes, and fairly active minutes. The sedentary minutes distributions contrasts this, as expected, since it is left skewed (predominantly high sedentary values, a few active (low minutes) entries). 
 
 
 
