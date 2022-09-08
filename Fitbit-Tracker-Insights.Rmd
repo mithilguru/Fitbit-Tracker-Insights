@@ -266,7 +266,7 @@ head(i_usage)
 # summarizing individual user data
 usage <- i_usage %>%
   group_by(UsageActivity) %>%
-  summarise(Users = n()) %>%
+  summarize(Users = n()) %>%
   mutate(Percent = scales::percent(Users/sum(Users)))
 
 summary(i_usage$Logs)
@@ -317,7 +317,91 @@ The initial data summaries suggest most users are generally active (median 7439 
 dfn %>% select(c('TotalSteps', 'TotalDistance', 'VeryActiveMinutes', 'FairlyActiveMinutes', 'LightlyActiveMinutes', 'SedentaryMinutes')) %>% plot_histogram(ncol = 3, ggtheme = theme_light(base_line_size = 0, base_rect_size = 0))
 options(repr.plot.width = 21, repr.plot.height = 9)
 ```
-The distributions of the activity variables confirm the initial summaries: active entries are right-skewed (biased by a select few active users) as shown by the skewed distributions of total distance, total steps, very active minutes, and fairly active minutes. The sedentary minutes distributions contrasts this, as expected, since it is left skewed (predominantly high sedentary values, a few active (low minutes) entries). 
+The distributions of the activity variables confirm the initial summaries: active entries are right-skewed (biased by a select few active users) as shown by the skewed distributions of total distance, total steps, very active minutes, and fairly active minutes. The sedentary minutes distributions contrasts this, as expected, since it is left skewed (predominantly high sedentary values, a few active (low minutes) entries) and also bi modal (two peaks). Now checking sleep and calorie variables next.
+
+```{r}
+# distributions of sleep and calorie data
+dfn %>% select(c('Calories', 'TotalMinutesAsleep')) %>% plot_histogram(ncol = 2, ggtheme = theme_light(base_line_size = 0, base_rect_size = 0))
+options(repr.plot.width = 21, repr.plot.height = 9)
+```
+Viewing the calorie burn distribution, it is slightly right-skewed (aligns with activity data) and centered around ~2000 calories. The time asleep distribution is mostly symmetrical with no obvious outliers.
+
+Taking a more in-depth look at activity data now.
+
+```{r}
+# activity data by hour dataframe
+dfh_o <- dfh %>%
+  group_by (Day, Time) %>% 
+  summarize(AverageSteps = mean(StepTotal), AverageIntensity = mean(TotalIntensity))
+
+dfh_o$Day <- ordered(dfh_o$Day, levels=c("Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday", "Sunday"))
+                                 
+head(dfh_o)
+```
+```{r}
+# activity data by hour (steps)
+ggplot(dfh_o, aes(x = Time, y = Day, fill = AverageSteps)) + 
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title= "Average Activity During the Week", 
+       x=" ", y=" ", fill = "Average\nSteps") +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  geom_tile(color = "white", lwd = .7, linetype = 1) +
+  theme(plot.title = element_text(hjust = 0.5, vjust = 0.7, size = 16),
+        panel.background = element_blank()) + 
+  coord_fixed()
+
+# activity data by hour (intensity)
+ggplot(dfh_o, aes(x = Time, y = Day, fill = AverageIntensity)) + 
+  theme(axis.text.x = element_text(angle = 90)) + 
+  labs(title= "Average Activity During the Week", 
+       x=" ", y=" ", fill = "Average\nIntensity") +
+  scale_fill_gradient(low = "white", high = "darkorange") +
+  geom_tile(color = "white", lwd = .7, linetype = 1) +
+  theme(plot.title = element_text(hjust = 0.5, vjust = 0.7, size = 16),
+        panel.background = element_blank()) + 
+  coord_fixed()
+
+```
+Viewing the step data, users are typically most active around midday on the weekends and late afternoon / early evening on weekdays. Intensity data essentially mirrors the step data, meaning the users' intense activities are typically movement-based. Now grouping users based on activity level.
+
+```{r}
+# creating grouped user data frame
+u_dfn <- dfn %>%
+  group_by (Id) %>% 
+  summarize(AverageSteps = mean(TotalSteps), 
+            AverageVeryActiveMinutes = mean(VeryActiveMinutes), 
+            AverageFairlyActiveMinutes = mean(FairlyActiveMinutes),
+            AverageLightlyActiveMinutes = mean(LightlyActiveMinutes),
+            AverageSedentaryMinutes = mean(SedentaryMinutes),
+            AverageCalories = mean(Calories),
+            AverageTimeAsleep= mean(TotalMinutesAsleep)) %>% 
+  # categorizing users by activity level (steps)
+  mutate(ActivityLevel = case_when(
+    AverageSteps < 5000 ~ "Average",
+    between(AverageSteps, 5000, 9999) ~ "Active",
+    AverageSteps >= 10000 ~ "Very Active"))
+
+head(u_dfn)
+```
+```{r}
+# summarizing individual activity data
+activity <- u_dfn %>%
+  group_by(ActivityLevel) %>%
+  summarize(Users = n()) %>%
+  mutate(Percent = scales::percent(Users/sum(Users)))
+
+activity
+```
+Users were categorized into three different activity groups: Average (<5000 steps), Active (5000-9999 steps), and Very Active (10000+ steps) based on daily average step totals. 
+
+These groups were derived from the Center for Disease Control (CDC) lifestyle recommendations - 
+The typical american walks 3000-4000 steps a day -> 'Average' activity for this sample is set for (<5000 steps)
+The recommended active lifestyle is upwards of 10000 steps a day -> 'Very Active' activity for this sample is set for above the recommendation (10000> steps)
+Users with average step totals between the above levels -> 'Active' users
+
+Over half of the users fall into the 'Active' category (18 users), and an even amount of 'Average' and 'Very Active' users make up the rest of the sample (8 average users, 7 very active users). Now viewing activity trends between groups, as well as relationships between other variables.
+
+
 
 
 
