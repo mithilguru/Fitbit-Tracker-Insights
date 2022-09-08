@@ -251,7 +251,6 @@ head(dfh)
 ## ANALYSIS
 
 Initial exploratory analysis involves understanding usage patterns. The study spanned exactly one month (31 days), and ideally the majority of users logged data every day. 
-
 ```{r}
 # user logs data frame 
 i_usage <- dfn %>%
@@ -260,7 +259,6 @@ i_usage <- dfn %>%
   mutate(UsageActivity = if_else(between(Logs, 1, 15), "Inactive", "Regular"))
 
 head(i_usage)
-
 ```
 ```{r}
 # summarizing individual user data
@@ -272,6 +270,7 @@ usage <- i_usage %>%
 summary(i_usage$Logs)
 usage
 ```
+
 The median user has 31 logs (logged data every day), and the average is ~28 logs. Only one user is categorized as 'Inactive' (not logging at least every other day). Thus the majority of users are at least using trackers to log activity daily. Now viewing usage specific to date / day of week.
 
 ```{r}
@@ -298,13 +297,10 @@ ggplot(dw_usage, aes(x = Day, y = Logs, fill = Day)) +
   theme(panel.background = element_blank()) + 
   scale_fill_manual(values=c("gainsboro", "gainsboro", "steelblue", "steelblue", "steelblue", "gainsboro", "gainsboro")) + 
   labs(title = "Total Logs by Day of Week")
-  
-
 ```
 Checking the unique logs per date shows on an average day, almost all the users (median = 32, mean = ~30) logged activity on their tracker. Sorting by day-of-week shows that the total number of logs are generally higher during the mid-week (Tuesday, Wednesday, Thursday) by a slight margin.
 
-Now viewing the general summary statistics for each variable, and user-specific activity data.
-
+Now viewing the general summary statistics for each variable, and user-specific activity data. 
 ```{r}
 # summary of daily activity data
 summary(dfn)
@@ -317,6 +313,7 @@ The initial data summaries suggest most users are generally active (median 7439 
 dfn %>% select(c('TotalSteps', 'TotalDistance', 'VeryActiveMinutes', 'FairlyActiveMinutes', 'LightlyActiveMinutes', 'SedentaryMinutes')) %>% plot_histogram(ncol = 3, ggtheme = theme_light(base_line_size = 0, base_rect_size = 0))
 options(repr.plot.width = 21, repr.plot.height = 9)
 ```
+
 The distributions of the activity variables confirm the initial summaries: active entries are right-skewed (biased by a select few active users) as shown by the skewed distributions of total distance, total steps, very active minutes, and fairly active minutes. The sedentary minutes distributions contrasts this, as expected, since it is left skewed (predominantly high sedentary values, a few active (low minutes) entries) and also bi modal (two peaks). Now checking sleep and calorie variables next.
 
 ```{r}
@@ -327,12 +324,11 @@ options(repr.plot.width = 21, repr.plot.height = 9)
 Viewing the calorie burn distribution, it is slightly right-skewed (aligns with activity data) and centered around ~2000 calories. The time asleep distribution is mostly symmetrical with no obvious outliers.
 
 Taking a more in-depth look at activity data now.
-
 ```{r}
 # activity data by hour dataframe
 dfh_o <- dfh %>%
   group_by (Day, Time) %>% 
-  summarize(AverageSteps = mean(StepTotal), AverageIntensity = mean(TotalIntensity))
+  summarize(AverageSteps = mean(StepTotal), AverageIntensity = mean(TotalIntensity), .groups = "drop")
 
 dfh_o$Day <- ordered(dfh_o$Day, levels=c("Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday", "Sunday"))
                                  
@@ -360,12 +356,11 @@ ggplot(dfh_o, aes(x = Time, y = Day, fill = AverageIntensity)) +
   theme(plot.title = element_text(hjust = 0.5, vjust = 0.7, size = 16),
         panel.background = element_blank()) + 
   coord_fixed()
-
 ```
-Viewing the step data, users are typically most active around midday on the weekends and late afternoon / early evening on weekdays. Intensity data essentially mirrors the step data, meaning the users' intense activities are typically movement-based. Now grouping users based on activity level.
+Viewing the step data, users are typically most active around midday on the weekends and late afternoon / early evening on weekdays. Intensity data essentially mirrors the step data, suggesting the users' intense exercise is typically movement-based. Now grouping users based on activity level.
 
 ```{r}
-# creating grouped user data frame
+# create grouped user data frame
 u_dfn <- dfn %>%
   group_by (Id) %>% 
   summarize(AverageSteps = mean(TotalSteps), 
@@ -375,21 +370,24 @@ u_dfn <- dfn %>%
             AverageSedentaryMinutes = mean(SedentaryMinutes),
             AverageCalories = mean(Calories),
             AverageTimeAsleep= mean(TotalMinutesAsleep)) %>% 
-  # categorizing users by activity level (steps)
+  # categorize users by activity level (steps)
   mutate(ActivityLevel = case_when(
     AverageSteps < 5000 ~ "Average",
     between(AverageSteps, 5000, 9999) ~ "Active",
     AverageSteps >= 10000 ~ "Very Active"))
 
+u_dfn$ActivityLevel <- factor(u_dfn$ActivityLevel, levels= c("Average", "Active", "Very Active")) 
+
 head(u_dfn)
 ```
 ```{r}
-# summarizing individual activity data
+# summarize individual activity data
 activity <- u_dfn %>%
   group_by(ActivityLevel) %>%
   summarize(Users = n()) %>%
   mutate(Percent = scales::percent(Users/sum(Users)))
 
+activity$ActivityLevel <- factor(activity$ActivityLevel, levels= c("Average", "Active", "Very Active")) 
 activity
 ```
 Users were categorized into three different activity groups: Average (<5000 steps), Active (5000-9999 steps), and Very Active (10000+ steps) based on daily average step totals. 
@@ -400,8 +398,91 @@ The recommended active lifestyle is upwards of 10000 steps a day -> 'Very Active
 Users with average step totals between the above levels -> 'Active' users
 
 Over half of the users fall into the 'Active' category (18 users), and an even amount of 'Average' and 'Very Active' users make up the rest of the sample (8 average users, 7 very active users). Now viewing activity trends between groups, as well as relationships between other variables.
+```{r}
+# compare intensity by activity group (very active)
+ggplot(u_dfn, aes(ActivityLevel, AverageVeryActiveMinutes, fill = ActivityLevel)) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(title= "Daily Intense Activity by Group (Very Active)", 
+       x= " ", y = "Average Daily Minutes") + 
+  scale_fill_brewer(palette = "Blues") + 
+  theme_classic(base_line_size = .25)
 
+# compare intensity by activity group (fairly active)
+ggplot(u_dfn, aes(ActivityLevel, AverageFairlyActiveMinutes, fill = ActivityLevel)) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(title= "Daily Activity by Group (Fairly Active)", 
+       x= " ", y = "Average Daily Minutes") + 
+  scale_fill_brewer(palette = "Blues") + 
+  theme_classic(base_line_size = .25)
 
+# compare intensity by activity group (lightly active)
+ggplot(u_dfn, aes(ActivityLevel, AverageLightlyActiveMinutes, fill = ActivityLevel)) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(title= "Daily Activity by Group (Lightly Active)", 
+       x= " ", y = "Average Daily Minutes") + 
+  scale_fill_brewer(palette = "Blues") + 
+  theme_classic(base_line_size = .25)
+
+# compare intensity by activity group (sedentary)
+ggplot(u_dfn, aes(ActivityLevel, AverageSedentaryMinutes, fill = ActivityLevel)) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(title= "Daily Inactivity by Group (Sedentary)", 
+       x= " ", y = "Average Daily Minutes") + 
+  scale_fill_brewer(palette = "Blues") + 
+  theme_classic(base_line_size = .25)
+```
+```{r}
+# anova test for significant differences in means between groups
+# very active minutes
+va <- aov(AverageVeryActiveMinutes ~ ActivityLevel, data = u_dfn)
+summary(va)
+
+# sedentary minutes
+sa <- aov(AverageSedentaryMinutes ~ ActivityLevel, data = u_dfn)
+summary(sa)
+```
+Observing activity distributions between groups via boxplot and ANOVA tests shows that there are significant differences in high intensity activity minutes between groups as expected - 'Very Active' level users are have higher active minutes than 'Average' level users. Similarly, there are significant differences between groups for sedentary minutes as well - 'Average' level users have higher sedentary minutes than 'Very Active' level users.
+Interestingly, the median level inactivity in the middle 'Active' group is much lower than the 'Very Active' group (although the range is higher), indicating that there is a select group of users that schedule their day around periods of high-intensity activity while otherwise being generally sedentary.
+
+Examining correlations between other variables next.
+```{r}
+# create correlation data frame with activity groups
+library(corrplot)
+library(ggpubr)
+
+dfcorr <- subset(dfn, select = c('TotalSteps', 'TotalDistance', 'VeryActiveMinutes', 
+                                 'FairlyActiveMinutes', 'LightlyActiveMinutes', 'SedentaryMinutes', 
+                                 'Calories'))
+dfcorr
+```
+```{r}
+# create correlation matrix
+corr = cor(dfcorr)
+corrplot(corr, type = 'upper', addCoef.col = 'black', tl.cex = .7, diag = FALSE)
+
+```
+Looking at the overall linear (Pearson's) correlations between all the variables, the strongest associations are between activity variables (steps, distance, active minutes) as well as calories. Specifically, higher very active and fairly active minutes are strongly related with more steps and distance (r = .67, .68). 
+
+```{r}
+# view daily steps vs calories burned
+ggplot(dfcorr, aes(TotalSteps, Calories)) + 
+  geom_smooth(method = 'loess', formula = y ~ x, color = "steelblue") +
+  geom_point(size = .7) + 
+  stat_cor(method = "pearson", label.x = 12500, label.y = 25) +
+  labs(title= "Daily Steps vs Calories Burned", x = "Daily Steps", y = "Calories Burned") +
+  ylim(0, 5000) + xlim(0, 17000) +
+  theme_light()
+
+# view daily steps vs sleep time
+ggplot(dfn, aes(TotalSteps, TotalMinutesAsleep)) + 
+  geom_smooth(method = 'loess', formula = y ~ x, color = "steelblue") +
+  geom_point(size = .7) + 
+  stat_cor(method = "pearson", label.x = 360, label.y = 25) +
+  labs(title= "Daily Steps vs Time Asleep", x = "Daily Steps", y = "Total Minutes Asleep") +
+  ylim(0, 700) + xlim(0, 17000) +
+  theme_light()
+```
+Finally, seeing activity (steps) in relation to calories shows that there is a moderate positive correlation between total calories and calories burned (expected). There is no apparent relationship between activity (steps) and time asleep (also expected). Current Fitbit trackers give more detailed insight into sleep time and sleep quality that can be used to better identify sleep habits and relationships with other factors.
 
 
 
