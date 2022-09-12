@@ -1,2 +1,9 @@
-# Fitbit Tracker Data Insights
- Exploring Fitbit fitness tracker data for trends in usage and providing recommendations for product strategy.
+# Fitbit Tracker Insights
+## Project Overview
+
+
+
+## Intro
+## Feature Engineering
+## Analysis
+## Discussion
