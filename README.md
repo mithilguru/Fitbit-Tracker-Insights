@@ -54,4 +54,24 @@ The data was processed in SQL to -
 * Adjust columns (date/time transformations)
 
 ## Analysis
+
+![alt text](http://https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Usage-DoW.png)
+
+![alt text](http://url/to/img.png)
+![alt text](http://url/to/img.png)
+
+![alt text](http://url/to/img.png)
+![alt text](http://url/to/img.png)
+
+![alt text](http://url/to/img.png)
+![alt text](http://url/to/img.png)
+![alt text](http://url/to/img.png)
+![alt text](http://url/to/img.png)
+
+![alt text](http://url/to/img.png)
+
+![alt text](http://url/to/img.png)
+![alt text](http://url/to/img.png)
+
+
 ## Discussion
