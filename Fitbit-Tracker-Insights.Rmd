@@ -1,7 +1,6 @@
 ---
 title: "Fitbit-Tracker-Insights"
 author: "Mithil Guru"
-date: '2022-06-26'
 output: html_document
 ---
 
@@ -9,7 +8,7 @@ output: html_document
 
 ## INTRO
 
-Fitbit is a fitness technology company that produces wearables to monitor daily health and activity data, such as heart rate, steps, sleep-quality, etc. There is a tremendous amount of data collected by these wearable devices daily that can be harnessed to benefit the consumer and the company. I will explore the Fitbit fitness tracker data Kaggle dataset (https://www.kaggle.com/arashnic/fitbit) for business insight as an extension of the Google Data Analytics Certificate Capstone Project. 
+Fitbit is a fitness technology company that produces wearables to monitor daily health and activity data, such as heart rate, steps, sleep-quality, etc. There is a tremendous amount of data collected by the devices daily that can be harnessed to benefit the consumer and the company. I am exploring the Fitbit fitness tracker data Kaggle dataset (https://www.kaggle.com/arashnic/fitbit) to find trends in usage and provide recommendations for product strategy. 
 
 ### OBJECTIVES
 
@@ -26,9 +25,9 @@ The data description indicates it is generated from respondents to a survey in 2
 
 **DATA - Assessment**
 
-Assessing the source of the data, it is likely not reliable as the sample size is only 30, the survey was conducted and compiled by a third-party organization, and the data may be slighlty inconsistent, due to the source including data from different trackers, and outdated as current trackers have improved capabilities. Additionally, there is a possibility of voluntary response bias due to the participants consenting to take place in the study, which may have influenced their habits during the course of the study. There is also no extra information provided about the participants, so the sample may not be truly representative of the general population.
+Assessing the data source shows: the sample size is 30, the survey was conducted and compiled by a third-party organization, and the data may be slightly inconsistent, due to the source including data from different trackers, and outdated as current trackers have improved capabilities. Additionally, there is a possibility of voluntary response bias due to the participants consenting to take place in the study, which may have influenced their habits during the course of the study. There is also no extra information provided about the participants, so the sample may not be truly representative of the general population.
 
-Despite the limitations, the dataset is chosen for analysis since it is one of the few publicly available sources with Fitbit tracker data - most tracker data is locked for user privacy. The only alternative for reliable data would be to self-analyze Fitbit data with the use of the Fitbit API, but this limits study to one subject. 
+Despite the limitations, the dataset is chosen for analysis since it is one of the few publicly available sources with Fitbit tracker data - most tracker data is locked for user privacy. The alternative for reliable data would be to self-analyze Fitbit data with the use of the Fitbit API, but this limits study to one subject. 
 
 **DATA - Summary**
 
@@ -72,10 +71,7 @@ All variables are quantitative.
 
 **Intensity** - sorted by level (Sedentary, Lightly Active, Moderately Active, Very Active) for distance and time
 
-fitbit.com details the specifics of the activity intensity measurement - 
-0 = sedentary time - likely hours spent seated at work/school.
-1 = lightly active time - simple user walking throughout the day (i.e. walking around home, to and from work, etc.).
-2, 3 = fairly active, very active time - likely specific workout/exercise activity (i.e. running, lifting, sports, etc.).
+Levels of activity intensity (source: fitbit.com) - 0 = sedentary time - time spent immobile/seated (i.e. sitting at work/school). 1 = lightly active time - time spent walking throughout the day (i.e. walking around home, to and from work, etc.). 2, 3 = fairly active, very active time - time spent for specific workout/exercise activity (i.e. running, lifting, sports, etc.).
 
 **Calories** - total calories burned per day
 
@@ -99,7 +95,7 @@ head(dfs)
 head(dfhs)
 head(dfhi)
 ```
-Using SQL (BigQuery database) to perform the initial data preparation and R (dplyr) for additional data transformation and visualizations. Finally, a Tableau dashbaord contains additional supplemental visualizations.
+Using SQL (BigQuery database) to perform the initial data preparation and R (dplyr) for additional data transformation and visualizations, as well as a Tableau dashbaord for supplemental visualizations. The report format is inspired by the Google Data Analytics Certificate.
 
 
 
@@ -303,7 +299,7 @@ ggplot(dw_usage, aes(x = Day, y = Logs, fill = Day)) +
   scale_fill_manual(values=c("gainsboro", "gainsboro", "steelblue", "steelblue", "steelblue", "gainsboro", "gainsboro")) + 
   labs(title = "Total Logs by Day of Week")
 ```
-Checking the unique logs per date shows on an average day, almost all the users (median = 32, mean = ~30) logged activity on their tracker. Sorting by day-of-week shows that the total number of logs are generally higher during the mid-week (Tuesday, Wednesday, Thursday) by a slight margin.
+Checking the unique logs per date shows on an average day, almost all the users (median = 32, mean = ~30) logged activity on their tracker. Sorting by day-of-week shows that the total number of logs are generally higher during the mid-week (Tuesday, Wednesday, Thursday) by a small margin.
 
 **Activity**
 Now viewing the general summary statistics for each variable, and user-specific activity data. 
@@ -312,7 +308,7 @@ Now viewing the general summary statistics for each variable, and user-specific 
 summary(dfn)
 ```
 
-The initial data summaries suggest most users are generally active (median 7439 steps a day). The vast majority of time is spent being sedentary (expected), and the median time spent in intense activity is only 11 minutes (4 very active minutes + 7 fairly active minutes). The mean intense activity values are much higher for both (21 very active minutes, 13 fairly active minutes) hinting at a skewed distribution likely due to only a small portion of users having a regular workout routine. Users average around ~7 hours of sleep a night on average. Visualizing these distributions next for clarity.
+The data summaries suggest most users are generally active (median 7439 steps a day). The vast majority of time is spent being sedentary (expected), and the median time spent in intense activity is only 11 minutes (4 very active minutes, 7 fairly active minutes). The mean intense activity values are much higher for both (21 very active minutes, 13 fairly active minutes) hinting at a skewed distribution likely due to only a small portion of users having a regular workout routine. Users average around ~7 hours of sleep a night on average. Visualizing these distributions next for clarity.
 
 ```{r}
 # distributions of daily activity data
@@ -320,7 +316,7 @@ dfn %>% select(c('TotalSteps', 'TotalDistance', 'VeryActiveMinutes', 'FairlyActi
 options(repr.plot.width = 21, repr.plot.height = 9)
 ```
 
-The distributions of the activity variables confirm the initial summaries: active entries are right-skewed (biased by a select few active users) as shown by the skewed distributions of total distance, total steps, very active minutes, and fairly active minutes. The sedentary minutes distributions contrasts this, as expected, since it is left skewed (predominantly high sedentary values, a few active (low minutes) entries) and also bi modal (two peaks). Now checking sleep and calorie variables next.
+The distributions of the activity variables are in-line with the initial observations: active entries are right-skewed (biased by a select few active users) as shown by the skewed distributions of total distance, total steps, very active minutes, and fairly active minutes. The sedentary minutes distribution contrasts this, as expected, since it is left skewed (predominantly high sedentary values, a few active (low minutes) entries) and also bi-modal (two peaks). Now checking sleep and calorie variables next.
 
 ```{r}
 # distributions of sleep and calorie data
@@ -363,7 +359,7 @@ ggplot(dfh_o, aes(x = Time, y = Day, fill = AverageIntensity)) +
         panel.background = element_blank()) + 
   coord_fixed()
 ```
-Viewing the step data, users are typically most active around midday on the weekends and late afternoon / early evening on weekdays. Intensity data essentially mirrors the step data, suggesting the users' intense exercise is typically movement-based. Now grouping users based on activity level.
+Viewing the step data, users are typically most active around midday on the weekends and late afternoon / early evening on weekdays. Intensity data essentially mirrors the step data, suggesting the users' intense exercise is typically step-based (i.e. running). Now grouping users based on activity level.
 
 ```{r}
 # create grouped user data frame
@@ -422,7 +418,7 @@ ggplot(u_dfn, aes(ActivityLevel, AverageFairlyActiveMinutes, fill = ActivityLeve
   theme_classic(base_line_size = .25)
 
 # compare intensity by activity group (lightly active)
-ggplot(u_dfn, aes(ActivityLevel, AverageLightlyActiveMinutes, fill = ActivityLevel)) +
+ggplot(u_dfn, aes(ActivityLevel, AverageLightlyActiveMinutes, fill = ActivityLevel)) + ylim(0, 365) + 
   geom_boxplot(show.legend = FALSE) +
   labs(title= "Daily Activity by Group (Lightly Active)", 
        x= " ", y = "Average Daily Minutes") + 
@@ -430,7 +426,7 @@ ggplot(u_dfn, aes(ActivityLevel, AverageLightlyActiveMinutes, fill = ActivityLev
   theme_classic(base_line_size = .25)
 
 # compare intensity by activity group (sedentary)
-ggplot(u_dfn, aes(ActivityLevel, AverageSedentaryMinutes, fill = ActivityLevel)) +
+ggplot(u_dfn, aes(ActivityLevel, AverageSedentaryMinutes, fill = ActivityLevel)) + ylim(0, 1337) + 
   geom_boxplot(show.legend = FALSE) +
   labs(title= "Daily Inactivity by Group (Sedentary)", 
        x= " ", y = "Average Daily Minutes") + 
@@ -496,13 +492,13 @@ Finally, seeing activity (steps) in relation to calories shows that there is a m
 ## DISCUSSION
 
 **Summary**
-Analyzing the activity and sleep data of the sample gives a general idea of the usage of a typical Fitbit tracker. The most immediate observation is that users **do not** log all of the available information from the tracker. Only the daily activity and sleep data met sample size requirements for statistical analysis (~30 users). 
+Analyzing the activity and sleep data of the sample gives a general idea of the usage of a typical Fitbit tracker. The most immediate observation is that users **do not** log all of the available information from the tracker. Only the daily activity and sleep data meet sample size requirements for statistical analysis (~30 users). 
 This is interesting to note, as trackers do have advanced capabilities that can give users more detailed insight on their day-to-day health, yet these features are not being used *in this sample*. This should be investigated further in an official future study.
 
 The available activity data showcases a general trend in usage - activity levels are spread across a spectrum. There is a *highly active* subset of users that regularly perform intense workouts, and there is a *sedentary* subset of users that generally limit activity to light movement. The remaining users are spread in-between the two groups. 
-The strongest trend is the correlation between intense activity, steps, and distance. This is also seen with the hourly intense activity aligning with hourly steps data. The typical activity of Fitbit users suggests it is mostly running.
+The strongest trend is the correlation between intense activity, steps, and distance. This is also seen with the hourly intense activity aligning with hourly steps data. The typical activity of Fitbit users suggests the intense activity is mostly running.
 
-Sleep data is also provided, but without the in-depth metrics on sleep phases and sleep quality, it is difficult to attribute any associations between activity patterns and sleep. Most importantly, the **lack of** detailed sleep data in the sample suggests that users may not be inclined to track their sleep patterns in detail.
+Sleep data is also provided, but without the in-depth metrics on sleep phases and sleep quality, it is difficult to define any associations between activity patterns and sleep. More importantly, the **lack of** detailed sleep data in the sample suggests that users may not be inclined to track their sleep patterns in detail.
 
 **RECOMMENDATIONS**
 
@@ -517,7 +513,7 @@ As noted in the summary, more detailed data utilizing all aspects of the tracker
 
 One of the key features of the Fitbit app is the ability to share progress with friends and family. Social motivation is a strong influence in helping people build a fit lifestyle. This should be the focus of the app in addition to the detailed tracking. The combination of tracking and sharing progress leads individuals towards *using* the device and app above all. 
 
-An important aspect to track while implementing these recommendations is to understand user behavior and perceptions towards fitness data tracking. Studies show that while people look to maintain a healthy lifestyle are inclined to purchase and use fitness trackers, there is fine line between encouragement and pressure. Notifications and tracking cannot cross the ethical boundaries of overwhelming users with data. Thus, future study should be centered around a stronger sample of both regular and irregular users conducted by first-party researchers to get a better grasp of usage tendencies.
+An important aspect to track while implementing these recommendations is to understand user behavior and perceptions towards fitness data tracking. Studies show that while people who would like to maintain a healthy lifestyle are inclined to purchase and use fitness trackers, there is fine line between encouragement and pressure. Notifications and tracking cannot cross the ethical boundaries of overwhelming users with data. Thus, future study should be centered around a stronger sample of both regular and irregular users conducted by first-party researchers to get a better grasp of usage tendencies.
 
 **Sources**
 
