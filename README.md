@@ -17,7 +17,7 @@ The data description indicates it is generated from respondents to a survey in 2
 
 **DATA - Assessment**
 
-The data source is not ideal, as the sample size is only 30, the survey was conducted and compiled by a third-party organization, and the data may be slighlty inconsistent - due to the source including data from different trackers - and outdated as current trackers have improved capabilities. Additionally, there is a possibility of voluntary response bias due to the participants consenting to take place in the study, which may have influenced their habits during the course of the study. There is also no extra information provided about the participants, so the sample may not be truly representative of the general population.
+Assessing the data source shows - the sample size is 30, the survey was conducted and compiled by a third-party organization, and the data may be slightly inconsistent, due to the source including data from different trackers, and outdated as current trackers have improved capabilities. Additionally, there is a possibility of voluntary response bias due to the participants consenting to take place in the study, which may have influenced their habits during the course of the study. There is also no extra information provided about the participants, so the sample may not be truly representative of the general population.
 
 Despite the limitations, the dataset is chosen for analysis since it is one of the few publicly available sources with Fitbit tracker data - most tracker data is locked for user privacy. The only alternative for reliable data would be to self-analyze Fitbit data with the use of the Fitbit API, but this limits study to one subject. 
 
