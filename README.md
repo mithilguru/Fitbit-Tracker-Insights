@@ -64,7 +64,7 @@ The data was processed in SQL to -
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Activity-Intensity-Wk.png?raw=true "Activity Intensity during Week")
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Intense-Activity-G1.png?raw=true "Daily Intense Activity by Group")
-![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Inactivity-G.png?raw=true "Daily Inactivity by Group)
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Inactivity-G.png?raw=true "Daily Inactivity by Group")
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Corrplot.png?raw=true "Correlation Plot")
 
