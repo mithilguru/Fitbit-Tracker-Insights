@@ -407,7 +407,7 @@ ggplot(u_dfn, aes(ActivityLevel, AverageVeryActiveMinutes, fill = ActivityLevel)
   labs(title= "Daily Intense Activity by Group (Very Active)", 
        x= " ", y = "Average Daily Minutes") + 
   scale_fill_brewer(palette = "Blues") + 
-  theme_classic(base_line_size = .25)
+  theme_classic(base_line_size = .1)
 
 # compare intensity by activity group (fairly active)
 ggplot(u_dfn, aes(ActivityLevel, AverageFairlyActiveMinutes, fill = ActivityLevel)) +
@@ -415,7 +415,7 @@ ggplot(u_dfn, aes(ActivityLevel, AverageFairlyActiveMinutes, fill = ActivityLeve
   labs(title= "Daily Activity by Group (Fairly Active)", 
        x= " ", y = "Average Daily Minutes") + 
   scale_fill_brewer(palette = "Blues") + 
-  theme_classic(base_line_size = .25)
+  theme_classic(base_line_size = .1)
 
 # compare intensity by activity group (lightly active)
 ggplot(u_dfn, aes(ActivityLevel, AverageLightlyActiveMinutes, fill = ActivityLevel)) + ylim(0, 365) + 
@@ -423,7 +423,7 @@ ggplot(u_dfn, aes(ActivityLevel, AverageLightlyActiveMinutes, fill = ActivityLev
   labs(title= "Daily Activity by Group (Lightly Active)", 
        x= " ", y = "Average Daily Minutes") + 
   scale_fill_brewer(palette = "Blues") + 
-  theme_classic(base_line_size = .25)
+  theme_classic(base_line_size = .1)
 
 # compare intensity by activity group (sedentary)
 ggplot(u_dfn, aes(ActivityLevel, AverageSedentaryMinutes, fill = ActivityLevel)) + ylim(0, 1337) + 
@@ -431,7 +431,7 @@ ggplot(u_dfn, aes(ActivityLevel, AverageSedentaryMinutes, fill = ActivityLevel))
   labs(title= "Daily Inactivity by Group (Sedentary)", 
        x= " ", y = "Average Daily Minutes") + 
   scale_fill_brewer(palette = "Blues") + 
-  theme_classic(base_line_size = .25)
+  theme_classic(base_line_size = .1)
 ```
 ```{r}
 # anova test for significant differences in means between groups
@@ -474,7 +474,7 @@ ggplot(dfcorr, aes(TotalSteps, Calories)) +
   stat_cor(method = "pearson", label.x = 12500, label.y = 25) +
   labs(title= "Daily Steps vs Calories Burned", x = "Daily Steps", y = "Calories Burned") +
   ylim(0, 5000) + xlim(0, 17000) +
-  theme_light()
+  theme_light(base_line_size = 0, base_rect_size = 0.17)
 
 # view daily steps vs sleep time
 ggplot(dfn, aes(TotalSteps, TotalMinutesAsleep)) + 
@@ -483,7 +483,7 @@ ggplot(dfn, aes(TotalSteps, TotalMinutesAsleep)) +
   stat_cor(method = "pearson", label.x = 360, label.y = 25) +
   labs(title= "Daily Steps vs Time Asleep", x = "Daily Steps", y = "Total Minutes Asleep") +
   ylim(0, 700) + xlim(0, 17000) +
-  theme_light()
+  theme_light(base_line_size = 0, base_rect_size = 0.17)
 ```
 Finally, seeing activity (steps) in relation to calories shows that there is a moderate positive correlation between total calories and calories burned (expected). There is no apparent relationship between activity (steps) and time asleep (also expected). Current Fitbit trackers give more detailed insight into sleep time and sleep quality that can be used to better identify sleep habits and relationships with other factors. Additional supplemental visualizations can be viewed on Tableau Public.
 
