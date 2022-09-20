@@ -55,23 +55,21 @@ The data was processed in SQL to -
 
 ## Analysis
 
-![alt text](https://https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Usage-DoW.png "Total Logs by Day of Week")
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Usage-DoW.png?raw=true "Total Logs by Day of Week")
 
-![alt text](http://url/to/img.png)
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Distributions1.png?raw=true "Daily Activity Distributions")
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Distributions2.png?raw=true "Remaining Daily Distributions")
 
-![alt text](http://url/to/img.png)
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Steps-Wk.png?raw=true "Average Steps during Week")
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Activity-Intensity-Wk.png?raw=true "Activity Intensity during Week")
 
-![alt text](http://url/to/img.png)
-![alt text](http://url/to/img.png)
-![alt text](http://url/to/img.png)
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Intense-Activity-G1.png?raw=true "Daily Intense Activity by Group")
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Inactivity-G.png?raw=true "Daily Inactivity by Group)
 
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Corrplot.png?raw=true "Correlation Plot")
 
-![alt text](http://url/to/img.png)
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Steps-vs-Cals.png?raw=true "Daily Steps vs Calories")
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Steps-vs-Sleep.png?raw=true "Daily Steps vs Sleep")
 
 
 ## Discussion
