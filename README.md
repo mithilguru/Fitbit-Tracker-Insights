@@ -5,7 +5,7 @@
 
 ## Intro
 
-Fitbit is a fitness technology company that produces wearables to monitor daily health and activity data, such as heart rate, steps, sleep-quality, etc. There is a tremendous amount of data collected by these wearable devices daily that can be harnessed to benefit the consumer and the company. I am exploring the Fitbit fitness tracker data Kaggle dataset (https://www.kaggle.com/arashnic/fitbit) to find trends in usage and provide recommendations for product strategy. 
+Fitbit is a fitness technology company that produces wearables to monitor daily health and activity data, such as heart rate, steps, sleep-quality, etc. There is a tremendous amount of data collected by these devices daily that can be harnessed to benefit the consumer and the company. I am exploring the Fitbit fitness tracker data Kaggle dataset (https://www.kaggle.com/arashnic/fitbit) to find trends in usage and provide recommendations for product strategy. 
 
 **OBJECTIVES**
 
