@@ -500,7 +500,7 @@ The strongest trend is the correlation between intense activity, steps, and dist
 
 Sleep data is also provided, but without the in-depth metrics on sleep phases and sleep quality, it is difficult to define any associations between activity patterns and sleep. More importantly, the **lack of** detailed sleep data in the sample suggests that users may not be inclined to track their sleep patterns in detail.
 
-**RECOMMENDATIONS**
+**Recommendations**
 
 Priority for future product strategy must be centered around increasing device usage.
 Higher device usage -> greater user fitness/satisfaction -> more device and service sales
