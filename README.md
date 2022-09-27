@@ -44,7 +44,7 @@ Levels of activity intensity (source: fitbit.com) -
 
 ## Methods 
 
-Used SQL (BigQuery database) to perform the initial data preparation and R (dplyr) for additional data transformation and visualizations, as well as a Tableau dashbaord for supplemental visuals.
+Used SQL (BigQuery database) to perform the initial data preparation and R (dplyr) for additional data transformation and visualizations, as well as a [Tableau dashbaord](https://public.tableau.com/shared/S5G9YDQ35?:display_count=n&:origin=viz_share_link) for supplemental visuals.
 
 The data was processed in SQL to - 
 * Check for distinct users
@@ -98,10 +98,13 @@ Plotting the correlation matrix of the variables gives a quick look into variabl
 
 Looking at the overall linear (Pearson's) correlations between all the variables, the strongest associations are between activity variables (steps, distance, active minutes) as well as calories. Specifically, higher very active and fairly active minutes are strongly related with more steps and distance (r = .67, .68). 
 
+![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Supplemental-Visuals.png?raw=true "Supplemental Visuals")
+Viewing supplemental visuals relating inactivity to different variables shows that while there is no association between sedentary minutes and high intensity minutes, it appears on days with higher inactivity, the average sleep time is longer.
+
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Steps-V-Cals.png?raw=true "Daily Steps vs Calories")
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Steps-V-Sleep.png?raw=true "Daily Steps vs Sleep")
 
-Finally, seeing activity (steps) in relation to calories shows that there is a moderate positive correlation between total calories and calories burned (expected). There is no apparent relationship between activity (steps) and time asleep (also expected). Current Fitbit trackers give more detailed insight into sleep time and sleep quality that can be used to better identify sleep habits and relationships with other factors. Additional supplemental visualizations can be viewed on Tableau Public.
+Finally, seeing activity (steps) in relation to calories shows that there is a moderate positive correlation between total calories and calories burned (expected). There is no apparent relationship between activity (steps) and time asleep (also expected). Current Fitbit trackers give more detailed insight into sleep time and sleep quality that can be used to better identify sleep habits and relationships with other factors.
 
 
 
