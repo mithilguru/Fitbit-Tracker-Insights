@@ -44,7 +44,7 @@ Levels of activity intensity (source: fitbit.com) -
 
 ## Methods 
 
-Utilizing SQL (BigQuery database) to perform the initial data preparation and R (dplyr) for additional data transformation and visualizations, as well as a Tableau dashbaord for supplemental visuals.
+Used SQL (BigQuery database) to perform the initial data preparation and R (dplyr) for additional data transformation and visualizations, as well as a Tableau dashbaord for supplemental visuals.
 
 The data was processed in SQL to - 
 * Check for distinct users
@@ -65,15 +65,15 @@ Viewing usage specific to the date / day of week shows that the total number of 
 
 **Activity**
 
-Data summaries suggest most users are generally active (median 7439 steps a day). The vast majority of time is spent being sedentary (expected), and the median time spent in intense activity is only 11 minutes (4 very active minutes, 7 fairly active minutes). The mean intense activity values are much higher for both (21 very active minutes, 13 fairly active minutes) hinting at a skewed distribution likely due to only a small portion of users having a regular workout routine. Users average around ~7 hours of sleep a night on average. Visualizing these distributions next.
+Data summaries suggest most users are generally active (median 7439 steps a day). The vast majority of time is spent being sedentary (expected), and the median time spent in intense activity is only 11 minutes (4 very active minutes, 7 fairly active minutes). The mean intense activity values are much higher for both (21 very active minutes, 13 fairly active minutes) hinting at a skewed distribution likely due to only a small portion of users having a regular workout routine. Users average around ~7 hours of sleep a night on average. These distributions are shown below.
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Distributions-1.png?raw=true "Daily Activity Distributions")
 
-The distributions of the activity variables are in-line with the initial observations: active entries are right-skewed (biased by a select few active users) as shown by the skewed distributions of total distance, total steps, very active minutes, and fairly active minutes. The sedentary minutes distribution contrasts this, as expected, since it is left skewed (predominantly high sedentary values, a few active (low minutes) entries) and also bi-modal (two peaks). Now checking sleep and calorie variables next.
+The histograms of the activity variables are in-line with the initial observations: active entries are right-skewed (biased by a select few active users) as shown by the skewed distributions of total distance, total steps, very active minutes, and fairly active minutes. The sedentary minutes distribution contrasts this, as expected, since it is left skewed (predominantly high sedentary values, a few active (low minutes) entries) and also bi-modal (two peaks). Now checking sleep and calorie variables next.
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Distributions-2.png?raw=true "Remaining Daily Distributions")
 
-Viewing the calorie burn distribution, it is slightly right-skewed (aligns with activity data) and centered around ~2000 calories. The time asleep distribution is mostly symmetrical with no obvious outliers. Taking a more in-depth look at activity data now.
+Viewing the calorie burn distribution, it is slightly right-skewed (aligns with activity data) and centered around ~2000 calories. The time asleep distribution is mostly symmetrical with no obvious outliers. 
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Steps-Wk.png?raw=true "Average Steps during Week")
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Activity-Intensity-Wk.png?raw=true "Activity Intensity during Week")
@@ -82,7 +82,7 @@ Viewing the step data, users are typically most active around midday on the week
 
 Users were categorized into three different activity groups: Average (<5000 steps), Active (5000-9999 steps), and Very Active (10000+ steps) based on daily average step totals. 
 
-Over half of the users fall into the 'Active' category (18 users), and an even amount of 'Average' and 'Very Active' users make up the rest of the sample (8 average users, 7 very active users). Now viewing activity trends between groups, as well as relationships between other variables.
+Over half of the users fall into the 'Active' category (18 users), and an even amount of 'Average' and 'Very Active' users make up the rest of the sample (8 average users, 7 very active users). Viewing activity trends between groups, as well as relationships between other variables below.
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-IntenseActivity-G.png?raw=true "Daily Intense Activity by Group")
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Inactivity-G.png?raw=true "Daily Inactivity by Group")
@@ -92,7 +92,7 @@ Interestingly, the median level inactivity in the middle 'Active' group is much 
 
 **Relationships**
 
-Now examining correlations between other variables.
+Plotting the correlation matrix of the variables gives a quick look into variable relationships at a glance.
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Corrplot.png?raw=true "Correlation Plot")
 
