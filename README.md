@@ -46,7 +46,7 @@ Levels of activity intensity (source: fitbit.com) -
 
 ## Methods 
 
-Used SQL (BigQuery database) to perform the initial data preparation and R (dplyr) for additional data transformation and visualizations, as well as a [Tableau dashbaord](https://public.tableau.com/shared/S5G9YDQ35?:display_count=n&:origin=viz_share_link) for supplemental visuals.
+Used SQL (BigQuery database) to perform the initial data preparation and R (dplyr) for additional data transformation and visualizations, as well as a [Tableau dashboard](https://public.tableau.com/shared/S5G9YDQ35?:display_count=n&:origin=viz_share_link) for supplemental visuals.
 
 The data was processed in SQL to - 
 * Check for distinct users
