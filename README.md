@@ -1,7 +1,9 @@
 # Fitbit Tracker Insights
 ## Project Overview
 
-
+* Analyzed the data of 30+ fitness tracker users to identify usage trends
+* Integrated dataset with a cloud database (BigQuery) and processed data using SQL and R (DBI, dplyr)
+* Created and interpreted visuals via R (ggplot) and Tableau for product recommendations
 
 ## Intro
 
@@ -99,7 +101,8 @@ Plotting the correlation matrix of the variables gives a quick look into variabl
 Looking at the overall linear (Pearson's) correlations between all the variables, the strongest associations are between activity variables (steps, distance, active minutes) as well as calories. Specifically, higher very active and fairly active minutes are strongly related with more steps and distance (r = .67, .68). 
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Supplemental-Visuals.png?raw=true "Supplemental Visuals")
-Viewing supplemental visuals relating inactivity to different variables shows that while there is no association between sedentary minutes and high intensity minutes, it appears on days with higher inactivity, the average sleep time is longer.
+
+Viewing inactvity in relation to different variables shows that while there is no association between sedentary minutes and high intensity minutes, the average sleep time is longer on days with higher inactivity.
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Steps-V-Cals.png?raw=true "Daily Steps vs Calories")
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Steps-V-Sleep.png?raw=true "Daily Steps vs Sleep")
