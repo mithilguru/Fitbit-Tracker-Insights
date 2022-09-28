@@ -2,7 +2,7 @@
 ## Project Overview
 
 * Analyzed the data of 30+ fitness tracker users to identify usage trends
-* Integrated dataset with a cloud database (BigQuery) and processed data using SQL and R (DBI, dplyr)
+* Integrated the dataset with a cloud database (BigQuery) and processed data using SQL and R (DBI, dplyr)
 * Created and interpreted visuals via R (ggplot) and Tableau for product recommendations
 
 ## Intro
