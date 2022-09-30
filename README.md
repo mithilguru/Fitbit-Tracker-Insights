@@ -102,7 +102,7 @@ Looking at the overall linear (Pearson's) correlations between all the variables
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Supplemental-Visuals.png?raw=true "Supplemental Visuals")
 
-Viewing inactvity in relation to different variables shows that while there is no association between sedentary minutes and high intensity minutes, the average sleep time is slightly longer on days with higher inactivity.
+Viewing inactvity in relation to different variables shows that while there is no association between sedentary minutes and high intensity minutes, the average sleep time is slightly lower on days with higher inactivity.
 
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Steps-V-Cals.png?raw=true "Daily Steps vs Calories")
 ![alt text](https://github.com/mithilguru/Fitbit-Tracker-Insights/blob/main/Visuals/Daily-Steps-V-Sleep.png?raw=true "Daily Steps vs Sleep")
